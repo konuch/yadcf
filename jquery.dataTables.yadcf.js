@@ -611,11 +611,7 @@ if (!Object.entries) {
 			var i = 0;
 			dot_refs = dot_refs.split(".");
 			for (i = 0; i < dot_refs.length; i++) {
-				if (tmpObj[dot_refs[i]]) {
-					tmpObj = tmpObj[dot_refs[i]];
-				} else {
-					return '';
-				}
+				tmpObj = tmpObj[dot_refs[i]];
 			}
 			return tmpObj;
 		}
@@ -2549,7 +2545,7 @@ if (!Object.entries) {
 					} else if (columnObj.column_data_render) {
 						col_inner_elements = columnObj.column_data_render(data[j]._aData);
 					} else {
-						console('Looks like you missing column_data_render function for the column ' + column_number_filter);
+						console.log('Looks like you missing column_data_render function for the column ' + column_number_filter);
 					}
 					if (typeof col_inner_elements !== 'string') {
 						col_inner_elements = $(col_inner_elements);
@@ -3082,7 +3078,9 @@ if (!Object.entries) {
 										$('#yadcf-filter-wrapper-' + table_selector_jq_friendly + '-' + column_number).find('.yadcf-exclude-wrapper').find(':checkbox').prop('checked', true);
 										$('#yadcf-filter-' + table_selector_jq_friendly + '-' + column_number).addClass('inuse-exclude');
 									}
-									tmpStr = tmpStr.substring(5, tmpStr.indexOf(').)'));
+									if (tmpStr.indexOf(').)') !== -1) {
+										tmpStr = tmpStr.substring(5, tmpStr.indexOf(').)'));
+									}
 								}
 								// load saved regex_checkbox state
 								if (columnObj.regex_check_box === true) {
