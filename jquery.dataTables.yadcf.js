@@ -915,7 +915,7 @@ if (!Object.entries) {
 			}
 		}
 
-		function refreshSelectPlugin(columnObj, $selectObject, val) {
+		function refreshSelectPlugin(columnObj, $selectObject, val, skipFilterTrigger) {
 			var selectType = columnObj.select_type,
 				select_type_options = columnObj.select_type_options;
 			if (selectType === 'chosen') {
@@ -927,7 +927,16 @@ if (!Object.entries) {
 				if (val !== undefined) {
 					$selectObject.val(val);
 				}
-				$selectObject.trigger('change');
+
+				// skip triggering of filter when changing select2 value
+				if (skipFilterTrigger) {
+					var onChangeTmp = $($selectObject)[0].onchange;
+					$selectObject[0].onchange = null;
+					$selectObject.trigger('change');
+					$selectObject[0].onchange = onChangeTmp;
+				} else {
+					$selectObject.trigger('change');
+				}
 			} else if (selectType === 'custom_select') {
 				selectElementCustomRefreshFunc($selectObject);
 			}
@@ -5442,7 +5451,7 @@ if (!Object.entries) {
 						$filterElement.val('-1').removeClass('inuse');
 						table_arg.fnSettings().aoPreSearchCols[column_number].sSearch = '';
 						if (optionsObj.select_type !== undefined) {
-							refreshSelectPlugin(optionsObj, $filterElement, '-1');
+							refreshSelectPlugin(optionsObj, $filterElement, '-1', true);
 						}
 						break;
 					case 'auto_complete':
@@ -5466,7 +5475,7 @@ if (!Object.entries) {
 						$(document).data("#yadcf-filter-" + table_selector_jq_friendly + "-" + column_number + "_val", undefined);
 						table_arg.fnSettings().aoPreSearchCols[column_number].sSearch = '';
 						if (optionsObj.select_type !== undefined) {
-							refreshSelectPlugin(optionsObj, $filterElement, '-1');
+							refreshSelectPlugin(optionsObj, $filterElement, '-1', true);
 						}
 						break;
 					case 'range_date':
